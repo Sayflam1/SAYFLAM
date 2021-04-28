@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+فيديو صوتي
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+<style>
+body
+{
+background-color:powderblue;
+text-align:center;
+}
+p {
+  border: 1px solid black;
+  background-color: lightblue;
+  padding: 25px;
+  margin: 25px;
+color:blue;
+}
+input[type=text], select {
+  width: 50%;
+margin:15px;
+ padding:15px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=submit] {
+  width: 50%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px;
+  margin: 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+label{
+   width: 50%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px;
+  margin: 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+<div>
+<br>
+  <label for="channel">اختار فيديو صوتي:</label>
+  <select id="video">
+    <option value="HH-r0jy_118" name="hello">واش بصح تم العثور على أطلانتس في موريتانيا ؟؟ | الحلقة-14</option>
+    <option  value="erjjS-9poSg">اتهامات خطيرة ضد زعيم البوليساريو .. و اسبانيا تكشف عن نيتها الخبيثة اتجاه المغرب</option>
+    <option   value="Xf9CxTukLJ0">واش بصح سبيطار بن صميم مسكون بالجن ؟؟ | الحلقة -13</option>
+  </select>
+  <input type="submit" value="إضغط هنا" onclick="myFunction()">
+<br><br>
+<input id="id1" type="text" placeholder="EPdxETO4Vw8  : او يمكنك ادخال هنا فقط ايدي فيديو على سبيل متال">
+<button onclick="myFunction()">OK</button>
+<br><br>
+<audio id="youtube" controls autoplay loop 1></audio>
+<p id="demo"></p>
+<p id="demo2"></p>
+</div>
+<script>
+function myFunction() {
+// YouTube video ID
+var videoID = document.getElementById('video').value;
+document.getElementById('demo').innerHTML = "   جاري تشغيل ،يمكنك الان استيماع إلى فيديو  "+videoID ;
+document.getElementById('demo2').innerHTML = "https://www.youtube.com/watch?v"+videoID
+// Fetch video info (using a proxy to avoid CORS errors)
+fetch('https://cors-anywhere.herokuapp.com/' + "https://youtube.com/get_video_info?video_id" + videoID).then(response => {
+  if (response.ok) {
+    response.text().then(ytData => {
+      // parse response to find audio info
+      var ytData = parse_str(ytData);
+      var getAdaptiveFormats = JSON.parse(ytData.player_response).streamingData.adaptiveFormats;
+      var findAudioInfo = getAdaptiveFormats.findIndex(obj => obj.audioQuality);
+      // get the URL for the audio file
+      var audioURL = getAdaptiveFormats[findAudioInfo].url;
+      // update the <audio> element src
+      var youtubeAudio = document.getElementById('youtube');
+      youtubeAudio.src = audioURL;
+    });
+  }
+});
+function parse_str(str) {
+  return str.split('&').reduce(function(params, param) {
+    var paramSplit = param.split('=').map(function(value) {
+      return decodeURIComponent(value.replace('+', ' '));
+    });
+    params[paramSplit[0]] = paramSplit[1];
+    return params;
+  }, {});
+} 
+} 
+</script>
+</body>
+</html>
